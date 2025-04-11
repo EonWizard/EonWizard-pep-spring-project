@@ -9,7 +9,11 @@ import com.example.repository.AccountRepository;
 public class AccountService {
 
     @Autowired
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
+
+    public AccountService(AccountRepository accountRepository){
+        this.accountRepository = accountRepository;
+    }
 
     // create new account
     
