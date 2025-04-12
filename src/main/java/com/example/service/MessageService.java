@@ -1,13 +1,18 @@
 package com.example.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import com.example.entity.Account;
 import com.example.entity.Message;
+import com.example.repository.AccountRepository;
 import com.example.repository.MessageRepository;
 
 @Service
@@ -15,10 +20,12 @@ public class MessageService {
 
     
     private final MessageRepository messageRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
-    public MessageService(MessageRepository messageRepository){
+    public MessageService(MessageRepository messageRepository, AccountRepository accountRepository){
         this.messageRepository = messageRepository;
+        this.accountRepository = accountRepository;
     }
 
     // create new message
@@ -61,7 +68,11 @@ public class MessageService {
     }
 
     // get user messages based on account id
-    public List<Message> getAllMessagesByAccount(int account_id){
-        return messageRepository.findByAccountId(account_id);
+    public List<Message> getAllMessagesByAccount(int accountId){
+        Optional<Account> accountOptional = accountRepository.findById(accountId);
+        if(accountOptional.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account not found");
+        }
+        return messageRepository.findByAccountId(accountId);
     }
 }
