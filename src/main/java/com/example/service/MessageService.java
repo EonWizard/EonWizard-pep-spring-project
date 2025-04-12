@@ -62,6 +62,6 @@ public class MessageService {
 
     // get user messages based on account id
     public List<Message> getAllMessagesByAccount(int account_id){
-        // return 
+        return messageRepository.findByAccountId(account_id);
     }
 }
