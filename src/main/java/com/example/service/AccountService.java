@@ -18,9 +18,12 @@ public class AccountService {
 
     // create new account
     public Account newAccount(Account account){
-        if(account.getUsername().isEmpty() || account.getPassword().length() < 4 || !accountRepository.existsByUsername(account.getUsername())){
+        if(account.getUsername().isEmpty() || account.getPassword().length() < 4){
             throw new IllegalArgumentException("Invalid Credentials");
         }
+        if(accountRepository.existsByUsername(account.getUsername())){
+            throw new IllegalStateException("This username already exists"); 
+        } 
         return accountRepository.save(account);
 
     }

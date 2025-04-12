@@ -30,7 +30,7 @@ public class MessageService {
 
     // create new message
     public Message newMessage(Message message){
-        if(message.getMessageText() == null || message.getMessageText().isBlank() || message.getMessageText().length() > 255){
+        if(!accountRepository.existsById(message.getPostedBy()) || message.getMessageText().isBlank() || message.getMessageText().length() > 255){
             throw new IllegalArgumentException("Message Not Created: Message Must Not Already Exist, Be Empty, Or Be Over 255 Characters");
         }
         return messageRepository.save(message);
@@ -47,9 +47,13 @@ public class MessageService {
     }
 
     // delete message by id
-    public void deleteMessageById(Message message){
-        if(message != null){
-            messageRepository.deleteById(message.getMessageId());;
+    public int deleteMessageById(int messageId){
+        if(messageRepository.existsById(messageId)){
+             messageRepository.deleteById(messageId);
+            return 1;
+        }
+        else{
+            throw new IllegalArgumentException("Message does not exist");
         }
     }
 
